@@ -359,7 +359,7 @@
       ];
 
       return (
-        <div className="sticky top-0 z-40 w-full bg-[#FFF6E9]/90 backdrop-blur border-b-[3px] border-[#1E1B18]">
+        <div className="sticky top-0 z-40 w-full bg-[#FFF6E9]/95 backdrop-blur border-b-[3px] border-[#1E1B18]">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
             <button onClick={() => setPage("home")} className="shrink-0 flex items-center gap-2">
               <div className="w-10 h-10 rounded-full bg-[#FFCF3F] border-[3px] border-[#1E1B18] flex items-center justify-center shadow-[3px_3px_0_0_#1E1B18]">
@@ -370,6 +370,7 @@
               </span>
             </button>
 
+            {/* Desktop Navbar */}
             <div className="hidden sm:flex items-center gap-1.5 bg-white/70 border-[2.5px] border-[#1E1B18] rounded-full p-1 shadow-[3px_3px_0_0_#1E1B18]">
               {tabs.map((t) => (
                 <button
@@ -400,6 +401,24 @@
               )}
             </div>
           </div>
+
+          {/* Mobile Bottom Navigation Bar (Perbaikan: Agar di HP bisa klik Dog Breeds) */}
+          <div className="sm:hidden flex items-center justify-around border-t-[2.5px] border-[#1E1B18] bg-white/80 py-1 px-2">
+            {tabs.map((t) => (
+              <button
+                key={t.id}
+                onClick={() => setPage(t.id)}
+                className={`flex flex-col items-center justify-center py-1.5 px-3 rounded-xl font-display text-xs transition-all ${
+                  page === t.id 
+                    ? "bg-[#1E1B18] text-[#FFF6E9] shadow-[2px_2px_0_0_#FF6FA0]" 
+                    : "text-[#1E1B18]/75 hover:bg-[#FFCF3F]"
+                }`}
+              >
+                <Icon name={t.icon} size={16} className="mb-0.5" />
+                <span>{t.label}</span>
+              </button>
+            ))}
+          </div>
         </div>
       );
     }
@@ -408,7 +427,7 @@
       const doubled = [...BREED_LIST, ...BREED_LIST];
       return (
         <div>
-          <section className="max-w-5xl mx-auto px-6 pt-10 sm:pt-16 pb-10 grid sm:grid-cols-2 gap-8 items-center">
+          <section className="max-w-5xl mx-auto px-6 pt-8 sm:pt-16 pb-8 grid sm:grid-cols-2 gap-8 items-center text-center sm:text-left">
             <div>
               <span className="inline-block bg-[#4ADE9C] border-2 border-[#1E1B18] rounded-full px-3 py-1 font-display text-xs mb-4 shadow-[2px_2px_0_0_#1E1B18] -rotate-2">
                 10 pertanyaan · 2 menit · 100% seru
@@ -416,31 +435,43 @@
               <h1 className="font-display text-4xl sm:text-5xl leading-[1.05] text-[#1E1B18] mb-4">
                 Who Am I,<br /><span className="text-[#FF6FA0]">If I Was a Dog?</span>
               </h1>
-              <p className="font-body text-[#1E1B18]/75 text-base sm:text-lg mb-7 max-w-md">
+              <p className="font-body text-[#1E1B18]/75 text-base sm:text-lg mb-7 max-w-md mx-auto sm:mx-0">
                 Jawab 10 situasi sehari-hari, dan biarkan kepribadianmu ketemu ras anjing kartun yang paling mirip.
               </p>
-              <button
-                onClick={() => setPage("quiz")}
-                className="font-display text-lg sm:text-xl bg-[#FF6FA0] text-[#1E1B18] border-[3px] border-[#1E1B18] rounded-2xl px-8 py-4 shadow-[6px_6px_0_0_#1E1B18] hover:-translate-y-1 hover:shadow-[8px_8px_0_0_#1E1B18] transition-all animate-pulse-soft"
-              >
-                TAKE THE TEST 🐾
-              </button>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center sm:justify-start">
+                <button
+                  onClick={() => setPage("quiz")}
+                  className="font-display text-lg sm:text-xl bg-[#FF6FA0] text-[#1E1B18] border-[3px] border-[#1E1B18] rounded-2xl px-8 py-4 shadow-[6px_6px_0_0_#1E1B18] hover:-translate-y-1 hover:shadow-[8px_8px_0_0_#1E1B18] active:translate-y-0 active:shadow-none transition-all animate-pulse-soft"
+                >
+                  TAKE THE TEST 🐾
+                </button>
+                <button
+                  onClick={() => setPage("gallery")}
+                  className="font-display text-base bg-white text-[#1E1B18] border-[3px] border-[#1E1B18] rounded-2xl px-6 py-4 shadow-[4px_4px_0_0_#1E1B18] hover:-translate-y-0.5 active:translate-y-0 transition-all sm:hidden"
+                >
+                  Lihat Semua Ras 📚
+                </button>
+              </div>
             </div>
             <div className="flex justify-center animate-float">
-              <DogFace breed="golden" size={240} className="drop-shadow-[6px_6px_0_#1E1B18]" />
+              <DogFace breed="golden" size={200} className="drop-shadow-[6px_6px_0_#1E1B18] sm:w-[240px] sm:h-[240px]" />
             </div>
           </section>
 
           <div className="w-full overflow-hidden py-4 border-y-[3px] border-[#1E1B18] bg-white/60">
             <div className="flex gap-4 w-max animate-marquee">
               {doubled.map((b, i) => (
-                <div key={i} className="flex items-center gap-2 bg-white border-[2.5px] border-[#1E1B18] rounded-2xl px-3 py-2 shadow-[3px_3px_0_0_#1E1B18] shrink-0">
+                <button 
+                  key={i} 
+                  onClick={() => setPage("gallery")}
+                  className="flex items-center gap-2 bg-white border-[2.5px] border-[#1E1B18] rounded-2xl px-3 py-2 shadow-[3px_3px_0_0_#1E1B18] shrink-0 text-left"
+                >
                   <DogFace breed={b.key} size={40} />
                   <div className="pr-1">
                     <p className="font-display text-xs leading-tight">{b.name}</p>
                     <p className="text-[10px] text-[#1E1B18]/60 leading-tight">{b.category}</p>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           </div>
@@ -483,8 +514,8 @@
       const optionColors = ["#FFCF3F", "#45C4E0", "#FF6FA0", "#9B7EF2"];
 
       return (
-        <div className="max-w-2xl mx-auto px-5 sm:px-6 py-10">
-          <div className="relative mb-10 mt-4">
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
+          <div className="relative mb-8 mt-2">
             <div className="h-3 w-full bg-white border-[2.5px] border-[#1E1B18] rounded-full overflow-hidden">
               <div className="h-full bg-[#4ADE9C] transition-all duration-500" style={{ width: `${percent}%` }} />
             </div>
@@ -494,15 +525,15 @@
             <p className="text-right font-display text-xs mt-2 text-[#1E1B18]/60">{index + 1} / {total}</p>
           </div>
 
-          <div key={index} className={`bg-white border-[3px] border-[#1E1B18] rounded-3xl p-6 sm:p-8 shadow-[7px_7px_0_0_#1E1B18] ${phase === "in" ? "animate-slide-in" : "animate-slide-out"}`}>
-            <h2 className="font-display text-xl sm:text-2xl mb-6 leading-snug">{q.q}</h2>
+          <div key={index} className={`bg-white border-[3px] border-[#1E1B18] rounded-3xl p-5 sm:p-8 shadow-[7px_7px_0_0_#1E1B18] ${phase === "in" ? "animate-slide-in" : "animate-slide-out"}`}>
+            <h2 className="font-display text-lg sm:text-2xl mb-5 leading-snug">{q.q}</h2>
             <div className="grid gap-3">
               {q.options.map((opt, i) => (
                 <button
                   key={i}
                   onClick={() => choose(i)}
                   disabled={phase === "out"}
-                  className="relative text-left font-body text-sm sm:text-base border-[2.5px] border-[#1E1B18] rounded-2xl px-4 py-3.5 shadow-[3px_3px_0_0_#1E1B18] hover:scale-[1.02] transition-all"
+                  className="relative text-left font-body text-sm sm:text-base border-[2.5px] border-[#1E1B18] rounded-2xl px-4 py-3.5 shadow-[3px_3px_0_0_#1E1B18] hover:scale-[1.01] active:scale-[0.98] transition-all"
                   style={{ backgroundColor: reaction === i ? optionColors[i] : "#FFF6E9" }}
                 >
                   <span className="font-display text-xs text-[#1E1B18]/50 mr-2">{String.fromCharCode(65 + i)}.</span>
@@ -519,16 +550,16 @@
     function ResultsPage({ breed, onRetry }) {
       const b = BREEDS[breed];
       return (
-        <div className="max-w-xl mx-auto px-5 py-10 text-center">
-          <p className="font-display text-sm text-[#1E1B18]/60 mb-2">Hasil Akhir!</p>
-          <h1 className="font-display text-3xl mb-8">Kamu adalah seekor...</h1>
+        <div className="max-w-xl mx-auto px-4 sm:px-5 py-8 text-center">
+          <p className="font-display text-sm text-[#1E1B18]/60 mb-1">Hasil Akhir!</p>
+          <h1 className="font-display text-2xl sm:text-3xl mb-6">Kamu adalah seekor...</h1>
           
-          <div className="bg-white border-[3px] border-[#1E1B18] rounded-[28px] p-6 shadow-[9px_9px_0_0_#1E1B18] text-center">
+          <div className="bg-white border-[3px] border-[#1E1B18] rounded-[28px] p-5 sm:p-6 shadow-[8px_8px_0_0_#1E1B18] text-center">
             <div className="flex justify-center mb-3">
-              <DogFace breed={b.key} size={130} />
+              <DogFace breed={b.key} size={120} />
             </div>
             <h3 className="font-display text-2xl">{b.name}</h3>
-            <p className="inline-block font-display text-sm px-3 py-0.5 rounded-full border-2 border-[#1E1B18] mt-1 mb-4" style={{ backgroundColor: b.accent }}>
+            <p className="inline-block font-display text-xs sm:text-sm px-3 py-0.5 rounded-full border-2 border-[#1E1B18] mt-1 mb-4" style={{ backgroundColor: b.accent }}>
               {b.tagline}
             </p>
             <p className="font-body text-sm text-[#1E1B18]/75 mb-6">{b.blurb}</p>
@@ -550,7 +581,7 @@
 
           <button
             onClick={onRetry}
-            className="mt-8 font-display text-sm bg-white border-[2.5px] border-[#1E1B18] rounded-xl px-6 py-3 shadow-[3px_3px_0_0_#1E1B18] hover:-translate-y-0.5 transition-transform"
+            className="mt-6 font-display text-sm bg-white border-[2.5px] border-[#1E1B18] rounded-xl px-6 py-3 shadow-[3px_3px_0_0_#1E1B18] active:translate-y-1 active:shadow-none hover:-translate-y-0.5 transition-transform"
           >
             Coba Lagi 🐾
           </button>
@@ -561,19 +592,20 @@
     function GalleryPage() {
       const [modal, setModal] = useState(null);
       return (
-        <div className="max-w-5xl mx-auto px-5 py-10">
-          <h1 className="font-display text-3xl mb-2 text-center">Dog Breeds Directory</h1>
-          <p className="text-center font-body text-sm text-[#1E1B18]/65 mb-8">Galeri semua ras anjing kartun.</p>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div className="max-w-5xl mx-auto px-4 sm:px-5 py-6 sm:py-10">
+          <h1 className="font-display text-2xl sm:text-3xl mb-1 text-center">Dog Breeds Directory</h1>
+          <p className="text-center font-body text-xs sm:text-sm text-[#1E1B18]/65 mb-6">Sentuh kartu untuk melihat detail kepribadiannya.</p>
+          
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
             {BREED_LIST.map((b) => (
               <button
                 key={b.key}
                 onClick={() => setModal(b.key)}
-                className="bg-white border-[2.5px] border-[#1E1B18] rounded-2xl p-4 shadow-[4px_4px_0_0_#1E1B18] hover:-translate-y-1 transition-all flex flex-col items-center"
+                className="bg-white border-[2.5px] border-[#1E1B18] rounded-2xl p-3 sm:p-4 shadow-[4px_4px_0_0_#1E1B18] active:translate-y-0.5 active:shadow-[2px_2px_0_0_#1E1B18] hover:-translate-y-1 transition-all flex flex-col items-center text-center"
               >
-                <DogFace breed={b.key} size={72} />
-                <p className="font-display text-sm mt-2">{b.name}</p>
-                <span className="mt-1 text-[10px] font-display px-2 py-0.5 rounded-full border border-[#1E1B18]" style={{ backgroundColor: b.accent }}>
+                <DogFace breed={b.key} size={64} className="sm:w-[72px] sm:h-[72px]" />
+                <p className="font-display text-xs sm:text-sm mt-2">{b.name}</p>
+                <span className="mt-1 text-[9px] sm:text-[10px] font-display px-2 py-0.5 rounded-full border border-[#1E1B18]" style={{ backgroundColor: b.accent }}>
                   {b.category}
                 </span>
               </button>
@@ -581,16 +613,25 @@
           </div>
 
           {modal && (
-            <div className="fixed inset-0 z-50 bg-[#1E1B18]/60 flex items-center justify-center p-5" onClick={() => setModal(null)}>
-              <div className="bg-[#FFF6E9] border-[3px] border-[#1E1B18] rounded-3xl p-6 max-w-sm w-full shadow-[8px_8px_0_0_#1E1B18]" onClick={(e) => e.stopPropagation()}>
+            <div className="fixed inset-0 z-50 bg-[#1E1B18]/70 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => setModal(null)}>
+              <div className="bg-[#FFF6E9] border-[3px] border-[#1E1B18] rounded-3xl p-5 sm:p-6 max-w-sm w-full shadow-[8px_8px_0_0_#1E1B18] max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
                 <div className="flex flex-col items-center text-center">
-                  <DogFace breed={modal} size={110} />
-                  <h3 className="font-display text-xl mt-3">{BREEDS[modal].name}</h3>
+                  <DogFace breed={modal} size={90} className="sm:w-[110px] sm:h-[110px]" />
+                  <h3 className="font-display text-lg sm:text-xl mt-2">{BREEDS[modal].name}</h3>
                   <p className="font-display text-xs px-2.5 py-0.5 rounded-full border-2 border-[#1E1B18] mt-1 mb-3" style={{ backgroundColor: BREEDS[modal].accent }}>
                     {BREEDS[modal].tagline}
                   </p>
-                  <p className="font-body text-sm text-[#1E1B18]/75 mb-4">{BREEDS[modal].blurb}</p>
-                  <button onClick={() => setModal(null)} className="font-display text-xs bg-[#FFCF3F] border-2 border-[#1E1B18] rounded-xl px-4 py-2">
+                  <p className="font-body text-xs sm:text-sm text-[#1E1B18]/80 mb-4">{BREEDS[modal].blurb}</p>
+                  
+                  <div className="w-full text-left space-y-1.5 mb-5 bg-white/70 p-3 rounded-2xl border-2 border-[#1E1B18]">
+                    {BREEDS[modal].facts.map((f, i) => (
+                      <p key={i} className="font-body text-xs text-[#1E1B18]/85 flex items-start gap-1.5">
+                        <span className="text-[#FF6FA0] font-bold">🐾</span> {f}
+                      </p>
+                    ))}
+                  </div>
+
+                  <button onClick={() => setModal(null)} className="w-full font-display text-sm bg-[#FFCF3F] border-2 border-[#1E1B18] rounded-xl px-4 py-2.5 shadow-[3px_3px_0_0_#1E1B18] active:translate-y-0.5 active:shadow-none">
                     Tutup
                   </button>
                 </div>
@@ -628,7 +669,7 @@
             {page === "results" && resultBreed && <ResultsPage breed={resultBreed} onRetry={() => setPage("quiz")} />}
             {page === "gallery" && <GalleryPage />}
           </div>
-          <footer className="text-center font-body text-xs text-[#1E1B18]/50 py-8">
+          <footer className="text-center font-body text-xs text-[#1E1B18]/50 py-6 px-4">
             Made with 🐾 for dog people everywhere By Davin Ardiansyach.
           </footer>
         </div>
