@@ -169,6 +169,37 @@
 
     const BREED_LIST = Object.values(BREEDS);
 
+    const CATEGORY_INFOS = [
+      {
+        name: "Sporting Dogs",
+        badge: "Sporting",
+        color: "#FF6FA0",
+        desc: "Tipe penuh semangat, hangat, dan sangat sosial. Selalu siap diajak beraktivitas dan mudah dekat dengan siapa saja.",
+        icon: "🎾"
+      },
+      {
+        name: "Working Dogs",
+        badge: "Working",
+        color: "#4ADE9C",
+        desc: "Tipe fokus, terencana, dan berjiwa pemimpin. Sangat bertanggung jawab serta mandiri dalam menyelesaikan target.",
+        icon: "🧭"
+      },
+      {
+        name: "Companion Dogs",
+        badge: "Companion",
+        color: "#FFCF3F",
+        desc: "Tipe penenang suasana dan teman setia. Menghargai kenyamanan, kedamaian, serta hubungan yang tulus dan mendalam.",
+        icon: "🛋️"
+      },
+      {
+        name: "Chaos Mode",
+        badge: "Chaos-mode",
+        color: "#9B7EF2",
+        desc: "Tipe spontan, ekspresif, dan berenergi unik. Selalu punya ide tak terduga yang bikin suasana jadi seru dan ramai!",
+        icon: "⚡"
+      }
+    ];
+
     const QUESTIONS = [
       {
         q: "Kamu masuk ke pesta atau lingkungan baru. Reaksimu?",
@@ -402,7 +433,7 @@
             </div>
           </div>
 
-          {/* Mobile Bottom Navigation Bar (Perbaikan: Agar di HP bisa klik Dog Breeds) */}
+          {/* Mobile Bottom Navigation Bar */}
           <div className="sm:hidden flex items-center justify-around border-t-[2.5px] border-[#1E1B18] bg-white/80 py-1 px-2">
             {tabs.map((t) => (
               <button
@@ -469,7 +500,7 @@
                   <DogFace breed={b.key} size={40} />
                   <div className="pr-1">
                     <p className="font-display text-xs leading-tight">{b.name}</p>
-                    <p className="text-[10px] text-[#1E1B18]/60 leading-tight">{b.category}</p>
+                    <p className="text-[10px] text-[#1E1B18]/60 leading-tight">{b.tagline}</p>
                   </div>
                 </button>
               ))}
@@ -559,9 +590,14 @@
               <DogFace breed={b.key} size={120} />
             </div>
             <h3 className="font-display text-2xl">{b.name}</h3>
-            <p className="inline-block font-display text-xs sm:text-sm px-3 py-0.5 rounded-full border-2 border-[#1E1B18] mt-1 mb-4" style={{ backgroundColor: b.accent }}>
-              {b.tagline}
-            </p>
+            <div className="flex flex-wrap items-center justify-center gap-1.5 mt-1 mb-4">
+              <span className="font-display text-xs px-2.5 py-0.5 rounded-full border border-[#1E1B18] bg-white">
+                {b.category}
+              </span>
+              <span className="font-display text-xs px-3 py-0.5 rounded-full border border-[#1E1B18]" style={{ backgroundColor: b.accent }}>
+                {b.tagline}
+              </span>
+            </div>
             <p className="font-body text-sm text-[#1E1B18]/75 mb-6">{b.blurb}</p>
 
             <div className="space-y-3 text-left">
@@ -594,9 +630,10 @@
       return (
         <div className="max-w-5xl mx-auto px-4 sm:px-5 py-6 sm:py-10">
           <h1 className="font-display text-2xl sm:text-3xl mb-1 text-center">Dog Breeds Directory</h1>
-          <p className="text-center font-body text-xs sm:text-sm text-[#1E1B18]/65 mb-6">Sentuh kartu untuk melihat detail kepribadiannya.</p>
+          <p className="text-center font-body text-xs sm:text-sm text-[#1E1B18]/65 mb-8">Sentuh kartu untuk melihat detail kepribadiannya.</p>
           
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+          {/* Grid Kartu Anjing */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-14">
             {BREED_LIST.map((b) => (
               <button
                 key={b.key}
@@ -605,22 +642,73 @@
               >
                 <DogFace breed={b.key} size={64} className="sm:w-[72px] sm:h-[72px]" />
                 <p className="font-display text-xs sm:text-sm mt-2">{b.name}</p>
-                <span className="mt-1 text-[9px] sm:text-[10px] font-display px-2 py-0.5 rounded-full border border-[#1E1B18]" style={{ backgroundColor: b.accent }}>
-                  {b.category}
-                </span>
+                <div className="flex flex-col items-center gap-1 mt-1.5 w-full">
+                  <span className="text-[9px] sm:text-[10px] font-display px-2 py-0.5 rounded-full border border-[#1E1B18] bg-white">
+                    {b.category}
+                  </span>
+                  <span className="text-[9px] sm:text-[10px] font-display px-2 py-0.5 rounded-full border border-[#1E1B18] truncate max-w-full" style={{ backgroundColor: b.accent }}>
+                    {b.tagline}
+                  </span>
+                </div>
               </button>
             ))}
           </div>
 
+          {/* Section Penjelasan Kategori di Bagian Bawah */}
+          <div className="bg-white border-[3px] border-[#1E1B18] rounded-3xl p-5 sm:p-8 shadow-[6px_6px_0_0_#1E1B18]">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-xl">📖</span>
+              <h2 className="font-display text-xl sm:text-2xl text-[#1E1B18]">Panduan Kategori Ras</h2>
+            </div>
+            <p className="font-body text-xs sm:text-sm text-[#1E1B18]/70 mb-6">
+              Setiap kategori anjing memiliki energi dan cara berinteraksi yang khas di dunia nyata:
+            </p>
+
+            <div className="grid sm:grid-cols-2 gap-4">
+              {CATEGORY_INFOS.map((cat, i) => (
+                <div 
+                  key={i} 
+                  className="bg-[#FFF6E9] border-2 border-[#1E1B18] rounded-2xl p-4 shadow-[3px_3px_0_0_#1E1B18] flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="font-display text-sm sm:text-base text-[#1E1B18] flex items-center gap-1.5">
+                        <span>{cat.icon}</span> {cat.name}
+                      </h3>
+                      <span 
+                        className="text-[10px] font-display px-2 py-0.5 rounded-full border border-[#1E1B18]"
+                        style={{ backgroundColor: cat.color }}
+                      >
+                        {cat.badge}
+                      </span>
+                    </div>
+                    <p className="font-body text-xs sm:text-sm text-[#1E1B18]/80 leading-relaxed">
+                      {cat.desc}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Pop-up Modal */}
           {modal && (
             <div className="fixed inset-0 z-50 bg-[#1E1B18]/70 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => setModal(null)}>
               <div className="bg-[#FFF6E9] border-[3px] border-[#1E1B18] rounded-3xl p-5 sm:p-6 max-w-sm w-full shadow-[8px_8px_0_0_#1E1B18] max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
                 <div className="flex flex-col items-center text-center">
                   <DogFace breed={modal} size={90} className="sm:w-[110px] sm:h-[110px]" />
                   <h3 className="font-display text-lg sm:text-xl mt-2">{BREEDS[modal].name}</h3>
-                  <p className="font-display text-xs px-2.5 py-0.5 rounded-full border-2 border-[#1E1B18] mt-1 mb-3" style={{ backgroundColor: BREEDS[modal].accent }}>
-                    {BREEDS[modal].tagline}
-                  </p>
+                  
+                  {/* Badge Subtitle Lengkap: Kategori & Tagline */}
+                  <div className="flex flex-wrap items-center justify-center gap-1.5 mt-1 mb-3">
+                    <span className="font-display text-[11px] px-2.5 py-0.5 rounded-full border border-[#1E1B18] bg-white">
+                      {BREEDS[modal].category}
+                    </span>
+                    <span className="font-display text-[11px] px-2.5 py-0.5 rounded-full border border-[#1E1B18]" style={{ backgroundColor: BREEDS[modal].accent }}>
+                      {BREEDS[modal].tagline}
+                    </span>
+                  </div>
+
                   <p className="font-body text-xs sm:text-sm text-[#1E1B18]/80 mb-4">{BREEDS[modal].blurb}</p>
                   
                   <div className="w-full text-left space-y-1.5 mb-5 bg-white/70 p-3 rounded-2xl border-2 border-[#1E1B18]">
