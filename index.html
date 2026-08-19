@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Who Am I If I Was a Dog?</title>
+  <!-- Tailwind CSS & Fonts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- React & Babel Standalone -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
+  <!-- Lucide Icons Bundle -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    .font-display { font-family: 'Fredoka', sans-serif; }
+    .font-body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    @keyframes float { 0%,100%{ transform: translateY(0);} 50%{ transform: translateY(-10px);} }
+    .animate-float { animation: float 4s ease-in-out infinite; }
+    @keyframes pulse-soft { 0%,100%{ transform: scale(1);} 50%{ transform: scale(1.035);} }
+    .animate-pulse-soft { animation: pulse-soft 2.2s ease-in-out infinite; }
+    @keyframes marquee { from{ transform: translateX(0);} to{ transform: translateX(-50%);} }
+    .animate-marquee { animation: marquee 22s linear infinite; }
+    @keyframes slide-in { from{ opacity:0; transform: translateX(60px) rotate(2deg);} to{ opacity:1; transform: translateX(0) rotate(0);} }
+    .animate-slide-in { animation: slide-in 0.4s cubic-bezier(.22,1,.36,1); }
+    @keyframes slide-out { from{ opacity:1; transform: translateX(0) rotate(0);} to{ opacity:0; transform: translateX(-60px) rotate(-2deg);} }
+    .animate-slide-out { animation: slide-out 0.4s cubic-bezier(.22,1,.36,1); }
+    @keyframes paw-pop { 0%{ opacity:0; transform: scale(0.4) translateY(0);} 40%{ opacity:1; transform: scale(1.3) translateY(-6px);} 100%{ opacity:0; transform: scale(1) translateY(-18px);} }
+    .animate-paw-pop { animation: paw-pop 0.5s ease-out; }
+    @keyframes woof-pop { 0%{ opacity:0; transform: scale(0.5) translateY(6px);} 30%{ opacity:1; transform: scale(1.1) translateY(0);} 80%{ opacity:1;} 100%{ opacity:0; transform: translateY(-6px);} }
+    .animate-woof-pop { animation: woof-pop 0.7s ease-out; }
+    @keyframes run-across { 0%{ left:-10%; transform: scaleX(1);} 48%{ transform: scaleX(1);} 50%{ left:50%; transform: scaleX(-1);} 98%{ transform: scaleX(-1);} 100%{ left:-10%; transform: scaleX(1);} }
+    .animate-run-across { animation: run-across 1.5s ease-in-out infinite; top: 0; }
+    @keyframes confetti-fall { from{ opacity:1; transform: translateY(-10vh) rotate(0);} to{ opacity:0.9; transform: translateY(110vh) rotate(400deg);} }
+    .animate-confetti-fall { animation-name: confetti-fall; animation-timing-function: ease-in; animation-fill-mode: forwards; }
+    @keyframes modal-pop { from{ opacity:0; transform: scale(0.85) translateY(10px);} to{ opacity:1; transform: scale(1) translateY(0);} }
+    .animate-modal-pop { animation: modal-pop 0.25s cubic-bezier(.22,1,.36,1); }
+  </style>
+</head>
+<body class="bg-[#FFF6E9] text-[#1E1B18] m-0 p-0 selection:bg-[#FFCF3F]">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef, useMemo, useCallback } = React;
+    const INK = "#1E1B18";
+
+    // Icon helper
+    const Icon = ({ name, size = 18, className = "" }) => {
+      const iconRef = useRef(null);
+      useEffect(() => {
+        if (window.lucide && iconRef.current) {
+          iconRef.current.innerHTML = "";
+          const i = document.createElement("i");
+          i.setAttribute("data-lucide", name);
+          iconRef.current.appendChild(i);
+          window.lucide.createIcons({ root: iconRef.current });
+        }
+      }, [name]);
+      return <span ref={iconRef} className={`inline-flex items-center justify-center ${className}`} style={{ width: size, height: size }} />;
+    };
+
+    const BREEDS = {
+      golden: {
+        key: "golden",
+        name: "Golden Retriever",
+        tagline: "The Sunshine Loyalist",
+        category: "Sporting",
+        color: "#FFC94D",
+        earStyle: "floppy",
+        accent: "#FF6FA0",
+        blurb: "Kamu adalah teman yang selalu ada, gampang percaya sama orang, dan bikin siapa pun merasa disayang. Loyalitasmu itu nomor satu.",
+        facts: ["Selalu jadi yang pertama nawarin bantuan tanpa diminta.", "Ruangan jadi lebih hangat begitu kamu masuk.", "Susah banget marah lama-lama sama orang."],
+        stats: { social: 90, loyalty: 95, energy: 65, chaos: 20 },
+      },
+      corgi: {
+        key: "corgi",
+        name: "Corgi",
+        tagline: "The Short-Legged Chaos Goblin",
+        category: "Companion",
+        chaosMode: true,
+        color: "#F2A65A",
+        earStyle: "bat",
+        accent: "#9B7EF2",
+        blurb: "Kaki pendek, energi tak terbatas. Kamu adalah sumber kekacauan yang menyenangkan di setiap circle pertemanan.",
+        facts: ["Bisa bikin grup chat rame cuma dalam satu voice note.", "Punya energi lucu yang gak pernah abis.", "Selalu punya ide random yang ternyata seru."],
+        stats: { social: 80, loyalty: 75, energy: 60, chaos: 85 },
+      },
+      husky: {
+        key: "husky",
+        name: "Siberian Husky",
+        tagline: "The Free-Spirited Escape Artist",
+        category: "Working",
+        chaosMode: true,
+        color: "#8FB9D6",
+        earStyle: "pointy",
+        accent: "#45C4E0",
+        blurb: "Bebas dan gak suka dikekang. Kalau ada kesempatan buat petualangan mendadak, kamu yang pertama angkat tangan.",
+        facts: ["Rencana liburan H-1? Gaskeun, kamu udah packing.", "Vokal banget kalau lagi punya pendapat.", "Rutinitas membosankan adalah musuh terbesarmu."],
+        stats: { social: 70, loyalty: 55, energy: 95, chaos: 80 },
+      },
+      shiba: {
+        key: "shiba",
+        name: "Shiba Inu",
+        tagline: "The Independent Boss",
+        category: "Companion",
+        color: "#E0793C",
+        earStyle: "pointy",
+        accent: "#FFCF3F",
+        blurb: "Kamu tahu persis apa yang kamu mau, dan gak butuh validasi orang lain buat ngerasa cukup. Boundary adalah kata favoritmu.",
+        facts: ["Me-time adalah bentuk self-love paling murni.", "Senyum sopan, tapi tetap jaga jarak.", "Independen sampai ke urusan playlist sendiri."],
+        stats: { social: 35, loyalty: 60, energy: 55, chaos: 45 },
+      },
+      poodle: {
+        key: "poodle",
+        name: "Poodle",
+        tagline: "The Elegant Perfectionist",
+        category: "Companion",
+        color: "#F1EAE0",
+        earStyle: "curly",
+        accent: "#9B7EF2",
+        blurb: "Rapi, terorganisir, dan punya selera tinggi. Semua yang kamu sentuh jadi terlihat lebih niat dan estetik.",
+        facts: ["Spreadsheet warna-warni? Itu terapi buatmu.", "Selalu tahu diskon mana yang worth it.", "Detail kecil yang orang lain lewatkan, kamu sadari duluan."],
+        stats: { social: 75, loyalty: 80, energy: 50, chaos: 15 },
+      },
+      bulldog: {
+        key: "bulldog",
+        name: "Bulldog",
+        tagline: "The Chill Professional Napper",
+        category: "Companion",
+        color: "#D9A066",
+        earStyle: "stub",
+        accent: "#FF6FA0",
+        blurb: "Santai adalah gaya hidup. Kamu gak gampang panik, gak gampang drama, dan selalu jadi tempat paling nyaman buat rebahan bareng.",
+        facts: ["Rebahan itu bukan malas, itu strategi hidup.", "Konflik? Mending diem, hemat energi.", "Setia sama circle kecil yang udah teruji."],
+        stats: { social: 60, loyalty: 85, energy: 25, chaos: 20 },
+      },
+      collie: {
+        key: "collie",
+        name: "Border Collie",
+        tagline: "The Overachieving Strategist",
+        category: "Working",
+        color: "#8B6F4E",
+        earStyle: "pointy",
+        accent: "#4ADE9C",
+        blurb: "Planner sejati. Kamu suka tantangan, suka mikir strategi, dan gak nyaman kalau semuanya berantakan tanpa arah.",
+        facts: ["Checklist adalah cinta pertamamu.", "Selalu jadi yang mimpin proyek kelompok tanpa diminta.", "Energi tinggi tapi tetap terarah, bukan asal gerak."],
+        stats: { social: 65, loyalty: 90, energy: 90, chaos: 30 },
+      },
+      chihuahua: {
+        key: "chihuahua",
+        name: "Chihuahua",
+        tagline: "The Fierce Tiny King",
+        category: "Companion",
+        chaosMode: true,
+        color: "#E0B084",
+        earStyle: "bat",
+        accent: "#FF6FA0",
+        blurb: "Badan kecil, nyali sebesar gunung. Kamu gak takut speak up, dan orang yang meremehkanmu bakal kaget lihat betapa tegasnya kamu.",
+        facts: ["Ukuran kecil bukan berarti gampang diganggu.", "To the point, gak suka basa-basi berkepanjangan.", "Setia banget sama orang-orang terdekat aja."],
+        stats: { social: 55, loyalty: 70, energy: 60, chaos: 90 },
+      },
+    };
+
+    const BREED_LIST = Object.values(BREEDS);
+
+    const QUESTIONS = [
+      {
+        q: "Kamu masuk ke pesta atau lingkungan baru. Reaksimu?",
+        options: [
+          { t: "Samperin semua orang, kenalan bareng-bareng, auto jadi bintang party", tags: ["golden", "chihuahua"] },
+          { t: "Amati dulu sambil pegang minuman di pojokan, baru approach kalau vibe-nya pas", tags: ["shiba", "poodle"] },
+          { t: "Nempel ke circle yang udah kenal, ngobrol rame di situ aja", tags: ["corgi", "collie"] },
+          { t: "Senyum ramah ke semua orang, diam-diam itung waktu buat pulang", tags: ["bulldog", "husky"] },
+        ],
+      },
+      {
+        q: "Gaya kamu menyelesaikan tugas besar & deadline?",
+        options: [
+          { t: "Bikin planning rapi dari jauh-jauh hari, checklist lengkap", tags: ["collie", "poodle"] },
+          { t: "Kerja meledak-ledak pas mepet deadline, hasilnya tetap oke", tags: ["husky", "chihuahua"] },
+          { t: "Kerja santai dengan ritme sendiri, yang penting selesai", tags: ["bulldog", "shiba"] },
+          { t: "Ngerjain bareng tim, lebih semangat kalau rame-rame", tags: ["golden", "corgi"] },
+        ],
+      },
+      {
+        q: "Rencana liburan mendadak batal. Kamu ngapain?",
+        options: [
+          { t: "Langsung bikin plan B yang lebih seru dalam hitungan menit", tags: ["husky", "chihuahua"] },
+          { t: "Kecewa sebentar, terus healing sendiri: nonton atau tidur", tags: ["shiba", "bulldog"] },
+          { t: "Curhat ke temen deket biar mood balik lagi", tags: ["golden", "corgi"] },
+          { t: "Terima aja, toh masih ada waktu lain, santai", tags: ["poodle", "collie"] },
+        ],
+      },
+      {
+        q: "Cara favoritmu mengisi ulang energi (social battery)?",
+        options: [
+          { t: "Ngumpul rame-rame sama temen, makin rame makin semangat", tags: ["golden", "corgi"] },
+          { t: "Me time total: kunci pintu kamar, zero distraction", tags: ["shiba", "chihuahua"] },
+          { t: "Olahraga atau gerak aktif di luar ruangan", tags: ["husky", "collie"] },
+          { t: "Leyeh-leyeh santai, ngemil, nonton apa aja", tags: ["bulldog", "poodle"] },
+        ],
+      },
+      {
+        q: "Sikapmu saat menghadapi drama atau konflik sepele?",
+        options: [
+          { t: "Langsung tegas, ngomong to the point, gak suka basa-basi", tags: ["chihuahua", "husky"] },
+          { t: "Milih diem dan jaga jarak, males ribut", tags: ["shiba", "bulldog"] },
+          { t: "Coba jadi penengah biar semua damai lagi", tags: ["golden", "collie"] },
+          { t: "Bikin lucu-lucuan biar suasana cair", tags: ["corgi", "poodle"] },
+        ],
+      },
+      {
+        q: "Cara kamu menghibur teman dekat yang sedang sedih?",
+        options: [
+          { t: "Meluk erat dan nemenin diam-diam tanpa banyak tanya", tags: ["golden", "bulldog"] },
+          { t: "Ajak jalan-jalan atau ngapain aja biar mood teralihkan", tags: ["husky", "corgi"] },
+          { t: "Dengerin cerita sampai habis, kasih saran logis", tags: ["collie", "poodle"] },
+          { t: "Bikin ketawa dengan candaan receh", tags: ["chihuahua", "shiba"] },
+        ],
+      },
+      {
+        q: "Pola belanjamu saat lihat barang promo lucu?",
+        options: [
+          { t: "Checkout duluan, mikir belakangan", tags: ["chihuahua", "corgi"] },
+          { t: "Screenshot dulu, banding-bandingin harga baru beli", tags: ["collie", "poodle"] },
+          { t: "Beli kalau beneran butuh aja", tags: ["shiba", "bulldog"] },
+          { t: "Ajak temen beli bareng biar makin seru", tags: ["golden", "husky"] },
+        ],
+      },
+      {
+        q: "Peran alamimu saat kerja kelompok/tim?",
+        options: [
+          { t: "Leader yang atur strategi dan bagi tugas", tags: ["collie", "husky"] },
+          { t: "Support system yang jaga suasana tetap positif", tags: ["golden", "corgi"] },
+          { t: "Kerja individual, request bagian yang bisa dikerjain sendiri", tags: ["shiba", "chihuahua"] },
+          { t: "Quality control, mastiin semua rapi dan detail", tags: ["poodle", "bulldog"] },
+        ],
+      },
+      {
+        q: "Ada orang baru yang sok akrab & masuk personal space. Responmu?",
+        options: [
+          { t: "Fine-fine aja, malah seneng ada temen baru", tags: ["golden", "corgi"] },
+          { t: "Agak awkward tapi tetap sopan meladeni", tags: ["bulldog", "poodle"] },
+          { t: "Kasih boundary jelas, gak nyaman kalau kelewatan", tags: ["shiba", "chihuahua"] },
+          { t: "Balikin energinya, ikut heboh juga", tags: ["husky", "collie"] },
+        ],
+      },
+      {
+        q: "Suasana lingkungan ideal yang paling kamu cari?",
+        options: [
+          { t: "Rumah nyaman, hangat, dikelilingi orang yang disayang", tags: ["golden", "bulldog"] },
+          { t: "Ruang terbuka luas buat lari dan eksplor", tags: ["husky", "collie"] },
+          { t: "Tempat estetik, rapi, dan terorganisir", tags: ["poodle", "collie"] },
+          { t: "Tempat rame penuh kejutan dan keseruan random", tags: ["corgi", "chihuahua"] },
+        ],
+      },
+    ];
+
+    function playBark() {
+      try {
+        const Ctx = window.AudioContext || window.webkitAudioContext;
+        if (!Ctx) return;
+        const ctx = new Ctx();
+        const now = ctx.currentTime;
+        [0, 0.12].forEach((delay, i) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = "sawtooth";
+          osc.frequency.setValueAtTime(320 - i * 40, now + delay);
+          osc.frequency.exponentialRampToValueAtTime(120, now + delay + 0.11);
+          gain.gain.setValueAtTime(0.18, now + delay);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + delay + 0.13);
+          osc.connect(gain).connect(ctx.destination);
+          osc.start(now + delay);
+          osc.stop(now + delay + 0.14);
+        });
+      } catch (e) {}
+    }
+
+    function DogFace({ breed, size = 90, className = "" }) {
+      const b = BREEDS[breed];
+      if (!b) return null;
+      
+      const renderEars = () => {
+        switch (b.earStyle) {
+          case "bat":
+            return (
+              <React.Fragment>
+                <polygon points="8,58 21,4 39,54" fill={b.color} stroke={INK} strokeWidth="3" strokeLinejoin="round" />
+                <polygon points="92,58 79,4 61,54" fill={b.color} stroke={INK} strokeWidth="3" strokeLinejoin="round" />
+              </React.Fragment>
+            );
+          case "pointy":
+            return (
+              <React.Fragment>
+                <polygon points="10,52 24,10 36,55" fill={b.color} stroke={INK} strokeWidth="3" strokeLinejoin="round" />
+                <polygon points="90,52 76,10 64,55" fill={b.color} stroke={INK} strokeWidth="3" strokeLinejoin="round" />
+              </React.Fragment>
+            );
+          case "stub":
+            return (
+              <React.Fragment>
+                <ellipse cx="21" cy="48" rx="9" ry="12" fill={b.color} stroke={INK} strokeWidth="3" />
+                <ellipse cx="79" cy="48" rx="9" ry="12" fill={b.color} stroke={INK} strokeWidth="3" />
+              </React.Fragment>
+            );
+          case "curly":
+            return (
+              <React.Fragment>
+                <circle cx="16" cy="44" r="15" fill={b.color} stroke={INK} strokeWidth="3" />
+                <circle cx="84" cy="44" r="15" fill={b.color} stroke={INK} strokeWidth="3" />
+              </React.Fragment>
+            );
+          default:
+            return (
+              <React.Fragment>
+                <ellipse cx="18" cy="56" rx="14" ry="22" fill={b.color} stroke={INK} strokeWidth="3" transform="rotate(-15 18 56)" />
+                <ellipse cx="82" cy="56" rx="14" ry="22" fill={b.color} stroke={INK} strokeWidth="3" transform="rotate(15 82 56)" />
+              </React.Fragment>
+            );
+        }
+      };
+
+      return (
+        <svg viewBox="0 0 100 100" width={size} height={size} className={className}>
+          {renderEars()}
+          <circle cx="50" cy="55" r="36" fill={b.color} stroke={INK} strokeWidth="3" />
+          <ellipse cx="50" cy="68" rx="17" ry="11" fill="#FFF6E9" opacity="0.85" />
+          <circle cx="36" cy="50" r="6.5" fill="#FFF6E9" stroke={INK} strokeWidth="2.5" />
+          <circle cx="64" cy="50" r="6.5" fill="#FFF6E9" stroke={INK} strokeWidth="2.5" />
+          <circle cx="37" cy="51" r="3" fill={INK} />
+          <circle cx="65" cy="51" r="3" fill={INK} />
+          <ellipse cx="50" cy="63" rx="4.5" ry="3.5" fill={INK} />
+          <path d="M50 66 Q45 74 38 68" stroke={INK} strokeWidth="2.5" fill="none" strokeLinecap="round" />
+          <path d="M50 66 Q55 74 62 68" stroke={INK} strokeWidth="2.5" fill="none" strokeLinecap="round" />
+        </svg>
+      );
+    }
+
+    function Navbar({ page, setPage, barkCount, setBarkCount }) {
+      const [showWoof, setShowWoof] = useState(false);
+      const handleBark = () => {
+        playBark();
+        setBarkCount((c) => c + 1);
+        setShowWoof(true);
+        setTimeout(() => setShowWoof(false), 700);
+      };
+
+      const tabs = [
+        { id: "home", label: "Home", icon: "home" },
+        { id: "quiz", label: "Take Quiz", icon: "clipboard-list" },
+        { id: "gallery", label: "Dog Breeds", icon: "book-open" },
+      ];
+
+      return (
+        <div className="sticky top-0 z-40 w-full bg-[#FFF6E9]/90 backdrop-blur border-b-[3px] border-[#1E1B18]">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
+            <button onClick={() => setPage("home")} className="shrink-0 flex items-center gap-2">
+              <div className="w-10 h-10 rounded-full bg-[#FFCF3F] border-[3px] border-[#1E1B18] flex items-center justify-center shadow-[3px_3px_0_0_#1E1B18]">
+                <Icon name="paw-print" size={20} />
+              </div>
+              <span className="font-display text-xl tracking-tight text-[#1E1B18]">
+                Woof<span className="text-[#FF6FA0]">Match</span>
+              </span>
+            </button>
+
+            <div className="hidden sm:flex items-center gap-1.5 bg-white/70 border-[2.5px] border-[#1E1B18] rounded-full p-1 shadow-[3px_3px_0_0_#1E1B18]">
+              {tabs.map((t) => (
+                <button
+                  key={t.id}
+                  onClick={() => setPage(t.id)}
+                  className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full font-display text-sm transition-all duration-200 ${
+                    page === t.id ? "bg-[#1E1B18] text-[#FFF6E9]" : "text-[#1E1B18] hover:bg-[#FFCF3F]"
+                  }`}
+                >
+                  <Icon name={t.icon} size={16} />
+                  {t.label}
+                </button>
+              ))}
+            </div>
+
+            <div className="relative">
+              <button
+                onClick={handleBark}
+                className="flex items-center gap-1.5 bg-[#45C4E0] border-[2.5px] border-[#1E1B18] rounded-full px-3 py-2 shadow-[3px_3px_0_0_#1E1B18] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
+              >
+                <Icon name="volume-2" size={16} />
+                <span className="font-display text-xs">{barkCount}</span>
+              </button>
+              {showWoof && (
+                <div className="absolute -top-8 right-0 font-display text-sm bg-[#FFCF3F] border-2 border-[#1E1B18] rounded-full px-2.5 py-0.5 shadow-[2px_2px_0_0_#1E1B18] animate-woof-pop whitespace-nowrap">
+                  Woof!! 🐾
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    function HomePage({ setPage }) {
+      const doubled = [...BREED_LIST, ...BREED_LIST];
+      return (
+        <div>
+          <section className="max-w-5xl mx-auto px-6 pt-10 sm:pt-16 pb-10 grid sm:grid-cols-2 gap-8 items-center">
+            <div>
+              <span className="inline-block bg-[#4ADE9C] border-2 border-[#1E1B18] rounded-full px-3 py-1 font-display text-xs mb-4 shadow-[2px_2px_0_0_#1E1B18] -rotate-2">
+                10 pertanyaan · 2 menit · 100% seru
+              </span>
+              <h1 className="font-display text-4xl sm:text-5xl leading-[1.05] text-[#1E1B18] mb-4">
+                Who Am I,<br /><span className="text-[#FF6FA0]">If I Was a Dog?</span>
+              </h1>
+              <p className="font-body text-[#1E1B18]/75 text-base sm:text-lg mb-7 max-w-md">
+                Jawab 10 situasi sehari-hari, dan biarkan kepribadianmu ketemu ras anjing kartun yang paling mirip.
+              </p>
+              <button
+                onClick={() => setPage("quiz")}
+                className="font-display text-lg sm:text-xl bg-[#FF6FA0] text-[#1E1B18] border-[3px] border-[#1E1B18] rounded-2xl px-8 py-4 shadow-[6px_6px_0_0_#1E1B18] hover:-translate-y-1 hover:shadow-[8px_8px_0_0_#1E1B18] transition-all animate-pulse-soft"
+              >
+                TAKE THE TEST 🐾
+              </button>
+            </div>
+            <div className="flex justify-center animate-float">
+              <DogFace breed="golden" size={240} className="drop-shadow-[6px_6px_0_#1E1B18]" />
+            </div>
+          </section>
+
+          <div className="w-full overflow-hidden py-4 border-y-[3px] border-[#1E1B18] bg-white/60">
+            <div className="flex gap-4 w-max animate-marquee">
+              {doubled.map((b, i) => (
+                <div key={i} className="flex items-center gap-2 bg-white border-[2.5px] border-[#1E1B18] rounded-2xl px-3 py-2 shadow-[3px_3px_0_0_#1E1B18] shrink-0">
+                  <DogFace breed={b.key} size={40} />
+                  <div className="pr-1">
+                    <p className="font-display text-xs leading-tight">{b.name}</p>
+                    <p className="text-[10px] text-[#1E1B18]/60 leading-tight">{b.category}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    function QuizPage({ onFinish }) {
+      const [index, setIndex] = useState(0);
+      const [scores, setScores] = useState({});
+      const [phase, setPhase] = useState("in");
+      const [reaction, setReaction] = useState(null);
+
+      const total = QUESTIONS.length;
+      const q = QUESTIONS[index];
+
+      const choose = (optIdx) => {
+        if (phase === "out") return;
+        const opt = q.options[optIdx];
+        const next = { ...scores };
+        opt.tags.forEach((tag) => {
+          next[tag] = (next[tag] || 0) + 1;
+        });
+        setScores(next);
+        setReaction(optIdx);
+        setPhase("out");
+
+        setTimeout(() => {
+          setReaction(null);
+          if (index + 1 >= total) {
+            onFinish(next);
+          } else {
+            setIndex((i) => i + 1);
+            setPhase("in");
+          }
+        }, 480);
+      };
+
+      const percent = Math.round((index / total) * 100);
+      const optionColors = ["#FFCF3F", "#45C4E0", "#FF6FA0", "#9B7EF2"];
+
+      return (
+        <div className="max-w-2xl mx-auto px-5 sm:px-6 py-10">
+          <div className="relative mb-10 mt-4">
+            <div className="h-3 w-full bg-white border-[2.5px] border-[#1E1B18] rounded-full overflow-hidden">
+              <div className="h-full bg-[#4ADE9C] transition-all duration-500" style={{ width: `${percent}%` }} />
+            </div>
+            <div className="absolute -top-4 transition-all duration-500 text-xl" style={{ left: `calc(${percent}% - 10px)` }}>
+              🦴
+            </div>
+            <p className="text-right font-display text-xs mt-2 text-[#1E1B18]/60">{index + 1} / {total}</p>
+          </div>
+
+          <div key={index} className={`bg-white border-[3px] border-[#1E1B18] rounded-3xl p-6 sm:p-8 shadow-[7px_7px_0_0_#1E1B18] ${phase === "in" ? "animate-slide-in" : "animate-slide-out"}`}>
+            <h2 className="font-display text-xl sm:text-2xl mb-6 leading-snug">{q.q}</h2>
+            <div className="grid gap-3">
+              {q.options.map((opt, i) => (
+                <button
+                  key={i}
+                  onClick={() => choose(i)}
+                  disabled={phase === "out"}
+                  className="relative text-left font-body text-sm sm:text-base border-[2.5px] border-[#1E1B18] rounded-2xl px-4 py-3.5 shadow-[3px_3px_0_0_#1E1B18] hover:scale-[1.02] transition-all"
+                  style={{ backgroundColor: reaction === i ? optionColors[i] : "#FFF6E9" }}
+                >
+                  <span className="font-display text-xs text-[#1E1B18]/50 mr-2">{String.fromCharCode(65 + i)}.</span>
+                  {opt.t}
+                  {reaction === i && <span className="absolute -top-3 -right-2 text-2xl animate-paw-pop">🐾</span>}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    function ResultsPage({ breed, onRetry }) {
+      const b = BREEDS[breed];
+      return (
+        <div className="max-w-xl mx-auto px-5 py-10 text-center">
+          <p className="font-display text-sm text-[#1E1B18]/60 mb-2">Hasil Akhir!</p>
+          <h1 className="font-display text-3xl mb-8">Kamu adalah seekor...</h1>
+          
+          <div className="bg-white border-[3px] border-[#1E1B18] rounded-[28px] p-6 shadow-[9px_9px_0_0_#1E1B18] text-center">
+            <div className="flex justify-center mb-3">
+              <DogFace breed={b.key} size={130} />
+            </div>
+            <h3 className="font-display text-2xl">{b.name}</h3>
+            <p className="inline-block font-display text-sm px-3 py-0.5 rounded-full border-2 border-[#1E1B18] mt-1 mb-4" style={{ backgroundColor: b.accent }}>
+              {b.tagline}
+            </p>
+            <p className="font-body text-sm text-[#1E1B18]/75 mb-6">{b.blurb}</p>
+
+            <div className="space-y-3 text-left">
+              {Object.entries(b.stats).map(([k, v]) => (
+                <div key={k}>
+                  <div className="flex justify-between font-display text-xs mb-1">
+                    <span className="capitalize">{k}</span>
+                    <span>{v}%</span>
+                  </div>
+                  <div className="h-3 bg-[#FFF6E9] border-2 border-[#1E1B18] rounded-full overflow-hidden">
+                    <div className="h-full bg-[#FF6FA0]" style={{ width: `${v}%` }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <button
+            onClick={onRetry}
+            className="mt-8 font-display text-sm bg-white border-[2.5px] border-[#1E1B18] rounded-xl px-6 py-3 shadow-[3px_3px_0_0_#1E1B18] hover:-translate-y-0.5 transition-transform"
+          >
+            Coba Lagi 🐾
+          </button>
+        </div>
+      );
+    }
+
+    function GalleryPage() {
+      const [modal, setModal] = useState(null);
+      return (
+        <div className="max-w-5xl mx-auto px-5 py-10">
+          <h1 className="font-display text-3xl mb-2 text-center">Dog Breeds Directory</h1>
+          <p className="text-center font-body text-sm text-[#1E1B18]/65 mb-8">Galeri semua ras anjing kartun.</p>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {BREED_LIST.map((b) => (
+              <button
+                key={b.key}
+                onClick={() => setModal(b.key)}
+                className="bg-white border-[2.5px] border-[#1E1B18] rounded-2xl p-4 shadow-[4px_4px_0_0_#1E1B18] hover:-translate-y-1 transition-all flex flex-col items-center"
+              >
+                <DogFace breed={b.key} size={72} />
+                <p className="font-display text-sm mt-2">{b.name}</p>
+                <span className="mt-1 text-[10px] font-display px-2 py-0.5 rounded-full border border-[#1E1B18]" style={{ backgroundColor: b.accent }}>
+                  {b.category}
+                </span>
+              </button>
+            ))}
+          </div>
+
+          {modal && (
+            <div className="fixed inset-0 z-50 bg-[#1E1B18]/60 flex items-center justify-center p-5" onClick={() => setModal(null)}>
+              <div className="bg-[#FFF6E9] border-[3px] border-[#1E1B18] rounded-3xl p-6 max-w-sm w-full shadow-[8px_8px_0_0_#1E1B18]" onClick={(e) => e.stopPropagation()}>
+                <div className="flex flex-col items-center text-center">
+                  <DogFace breed={modal} size={110} />
+                  <h3 className="font-display text-xl mt-3">{BREEDS[modal].name}</h3>
+                  <p className="font-display text-xs px-2.5 py-0.5 rounded-full border-2 border-[#1E1B18] mt-1 mb-3" style={{ backgroundColor: BREEDS[modal].accent }}>
+                    {BREEDS[modal].tagline}
+                  </p>
+                  <p className="font-body text-sm text-[#1E1B18]/75 mb-4">{BREEDS[modal].blurb}</p>
+                  <button onClick={() => setModal(null)} className="font-display text-xs bg-[#FFCF3F] border-2 border-[#1E1B18] rounded-xl px-4 py-2">
+                    Tutup
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    function App() {
+      const [page, setPage] = useState("home");
+      const [barkCount, setBarkCount] = useState(0);
+      const [resultBreed, setResultBreed] = useState(null);
+
+      const finishQuiz = (scores) => {
+        let best = "golden";
+        let bestScore = -1;
+        Object.entries(scores).forEach(([k, v]) => {
+          if (v > bestScore) {
+            bestScore = v;
+            best = k;
+          }
+        });
+        setResultBreed(best);
+        setPage("results");
+      };
+
+      return (
+        <div className="min-h-screen flex flex-col justify-between">
+          <div>
+            <Navbar page={page} setPage={setPage} barkCount={barkCount} setBarkCount={setBarkCount} />
+            {page === "home" && <HomePage setPage={setPage} />}
+            {page === "quiz" && <QuizPage onFinish={finishQuiz} />}
+            {page === "results" && resultBreed && <ResultsPage breed={resultBreed} onRetry={() => setPage("quiz")} />}
+            {page === "gallery" && <GalleryPage />}
+          </div>
+          <footer className="text-center font-body text-xs text-[#1E1B18]/50 py-8">
+            Made with 🐾 for dog people everywhere By Davin Ardiansyach.
+          </footer>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>
