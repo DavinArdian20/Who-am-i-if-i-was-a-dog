@@ -72,8 +72,8 @@
         tagline: "The Sunshine Loyalist",
         category: "Sporting",
         color: "#FFC94D",
-        earStyle: "floppy",
         accent: "#FF6FA0",
+        image: "https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=400&q=80",
         blurb: "Kamu adalah teman yang selalu ada, gampang percaya sama orang, dan bikin siapa pun merasa disayang. Loyalitasmu itu nomor satu.",
         facts: ["Selalu jadi yang pertama nawarin bantuan tanpa diminta.", "Ruangan jadi lebih hangat begitu kamu masuk.", "Susah banget marah lama-lama sama orang."],
         stats: { social: 90, loyalty: 95, energy: 65, chaos: 20 },
@@ -85,8 +85,8 @@
         category: "Companion",
         chaosMode: true,
         color: "#F2A65A",
-        earStyle: "bat",
         accent: "#9B7EF2",
+        image: "https://images.unsplash.com/photo-1612536057832-2ff7ead58194?auto=format&fit=crop&w=400&q=80",
         blurb: "Kaki pendek, energi tak terbatas. Kamu adalah sumber kekacauan yang menyenangkan di setiap circle pertemanan.",
         facts: ["Bisa bikin grup chat rame cuma dalam satu voice note.", "Punya energi lucu yang gak pernah abis.", "Selalu punya ide random yang ternyata seru."],
         stats: { social: 80, loyalty: 75, energy: 60, chaos: 85 },
@@ -98,8 +98,8 @@
         category: "Working",
         chaosMode: true,
         color: "#8FB9D6",
-        earStyle: "pointy",
         accent: "#45C4E0",
+        image: "https://images.unsplash.com/photo-1605568427561-40dd23c2acea?auto=format&fit=crop&w=400&q=80",
         blurb: "Bebas dan gak suka dikekang. Kalau ada kesempatan buat petualangan mendadak, kamu yang pertama angkat tangan.",
         facts: ["Rencana liburan H-1? Gaskeun, kamu udah packing.", "Vokal banget kalau lagi punya pendapat.", "Rutinitas membosankan adalah musuh terbesarmu."],
         stats: { social: 70, loyalty: 55, energy: 95, chaos: 80 },
@@ -110,8 +110,10 @@
         tagline: "The Independent Boss",
         category: "Companion",
         color: "#E0793C",
-        earStyle: "pointy",
         accent: "#FFCF3F",
+        // Menggunakan file lokal shiba.jpg dengan fallback online
+        image: "shiba.jpg",
+        fallbackImage: "https://images.dog.ceo/breeds/shiba/shiba-8.jpg",
         blurb: "Kamu tahu persis apa yang kamu mau, dan gak butuh validasi orang lain buat ngerasa cukup. Boundary adalah kata favoritmu.",
         facts: ["Me-time adalah bentuk self-love paling murni.", "Senyum sopan, tapi tetap jaga jarak.", "Independen sampai ke urusan playlist sendiri."],
         stats: { social: 35, loyalty: 60, energy: 55, chaos: 45 },
@@ -122,8 +124,8 @@
         tagline: "The Elegant Perfectionist",
         category: "Companion",
         color: "#F1EAE0",
-        earStyle: "curly",
         accent: "#9B7EF2",
+        image: "https://images.unsplash.com/photo-1516371535707-512a1e83bb9a?auto=format&fit=crop&w=400&q=80",
         blurb: "Rapi, terorganisir, dan punya selera tinggi. Semua yang kamu sentuh jadi terlihat lebih niat dan estetik.",
         facts: ["Spreadsheet warna-warni? Itu terapi buatmu.", "Selalu tahu diskon mana yang worth it.", "Detail kecil yang orang lain lewatkan, kamu sadari duluan."],
         stats: { social: 75, loyalty: 80, energy: 50, chaos: 15 },
@@ -134,8 +136,8 @@
         tagline: "The Chill Professional Napper",
         category: "Companion",
         color: "#D9A066",
-        earStyle: "stub",
         accent: "#FF6FA0",
+        image: "https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=400&q=80",
         blurb: "Santai adalah gaya hidup. Kamu gak gampang panik, gak gampang drama, dan selalu jadi tempat paling nyaman buat rebahan bareng.",
         facts: ["Rebahan itu bukan malas, itu strategi hidup.", "Konflik? Mending diem, hemat energi.", "Setia sama circle kecil yang udah teruji."],
         stats: { social: 60, loyalty: 85, energy: 25, chaos: 20 },
@@ -146,8 +148,8 @@
         tagline: "The Overachieving Strategist",
         category: "Working",
         color: "#8B6F4E",
-        earStyle: "pointy",
         accent: "#4ADE9C",
+        image: "https://images.unsplash.com/photo-1568393691622-c7ba131d63b4?auto=format&fit=crop&w=400&q=80",
         blurb: "Planner sejati. Kamu suka tantangan, suka mikir strategi, dan gak nyaman kalau semuanya berantakan tanpa arah.",
         facts: ["Checklist adalah cinta pertamamu.", "Selalu jadi yang mimpin proyek kelompok tanpa diminta.", "Energi tinggi tapi tetap terarah, bukan asal gerak."],
         stats: { social: 65, loyalty: 90, energy: 90, chaos: 30 },
@@ -159,8 +161,8 @@
         category: "Companion",
         chaosMode: true,
         color: "#E0B084",
-        earStyle: "bat",
         accent: "#FF6FA0",
+        image: "https://images.unsplash.com/photo-1561037404-61cd46aa615b?auto=format&fit=crop&w=400&q=80",
         blurb: "Badan kecil, nyali sebesar gunung. Kamu gak takut speak up, dan orang yang meremehkanmu bakal kaget lihat betapa tegasnya kamu.",
         facts: ["Ukuran kecil bukan berarti gampang diganggu.", "To the point, gak suka basa-basi berkepanjangan.", "Setia banget sama orang-orang terdekat aja."],
         stats: { social: 55, loyalty: 70, energy: 60, chaos: 90 },
@@ -314,63 +316,27 @@
       } catch (e) {}
     }
 
+    // Komponen DogFace dengan auto-fallback jika file lokal belum dipindah
     function DogFace({ breed, size = 90, className = "" }) {
       const b = BREEDS[breed];
       if (!b) return null;
-      
-      const renderEars = () => {
-        switch (b.earStyle) {
-          case "bat":
-            return (
-              <React.Fragment>
-                <polygon points="8,58 21,4 39,54" fill={b.color} stroke={INK} strokeWidth="3" strokeLinejoin="round" />
-                <polygon points="92,58 79,4 61,54" fill={b.color} stroke={INK} strokeWidth="3" strokeLinejoin="round" />
-              </React.Fragment>
-            );
-          case "pointy":
-            return (
-              <React.Fragment>
-                <polygon points="10,52 24,10 36,55" fill={b.color} stroke={INK} strokeWidth="3" strokeLinejoin="round" />
-                <polygon points="90,52 76,10 64,55" fill={b.color} stroke={INK} strokeWidth="3" strokeLinejoin="round" />
-              </React.Fragment>
-            );
-          case "stub":
-            return (
-              <React.Fragment>
-                <ellipse cx="21" cy="48" rx="9" ry="12" fill={b.color} stroke={INK} strokeWidth="3" />
-                <ellipse cx="79" cy="48" rx="9" ry="12" fill={b.color} stroke={INK} strokeWidth="3" />
-              </React.Fragment>
-            );
-          case "curly":
-            return (
-              <React.Fragment>
-                <circle cx="16" cy="44" r="15" fill={b.color} stroke={INK} strokeWidth="3" />
-                <circle cx="84" cy="44" r="15" fill={b.color} stroke={INK} strokeWidth="3" />
-              </React.Fragment>
-            );
-          default:
-            return (
-              <React.Fragment>
-                <ellipse cx="18" cy="56" rx="14" ry="22" fill={b.color} stroke={INK} strokeWidth="3" transform="rotate(-15 18 56)" />
-                <ellipse cx="82" cy="56" rx="14" ry="22" fill={b.color} stroke={INK} strokeWidth="3" transform="rotate(15 82 56)" />
-              </React.Fragment>
-            );
-        }
-      };
-
       return (
-        <svg viewBox="0 0 100 100" width={size} height={size} className={className}>
-          {renderEars()}
-          <circle cx="50" cy="55" r="36" fill={b.color} stroke={INK} strokeWidth="3" />
-          <ellipse cx="50" cy="68" rx="17" ry="11" fill="#FFF6E9" opacity="0.85" />
-          <circle cx="36" cy="50" r="6.5" fill="#FFF6E9" stroke={INK} strokeWidth="2.5" />
-          <circle cx="64" cy="50" r="6.5" fill="#FFF6E9" stroke={INK} strokeWidth="2.5" />
-          <circle cx="37" cy="51" r="3" fill={INK} />
-          <circle cx="65" cy="51" r="3" fill={INK} />
-          <ellipse cx="50" cy="63" rx="4.5" ry="3.5" fill={INK} />
-          <path d="M50 66 Q45 74 38 68" stroke={INK} strokeWidth="2.5" fill="none" strokeLinecap="round" />
-          <path d="M50 66 Q55 74 62 68" stroke={INK} strokeWidth="2.5" fill="none" strokeLinecap="round" />
-        </svg>
+        <div 
+          className={`relative rounded-full overflow-hidden border-[3px] border-[#1E1B18] shadow-[2px_2px_0_0_#1E1B18] bg-white shrink-0 ${className}`} 
+          style={{ width: size, height: size }}
+        >
+          <img 
+            src={b.image} 
+            alt={b.name} 
+            className="w-full h-full object-cover select-none pointer-events-none"
+            loading="lazy"
+            onError={(e) => {
+              if (b.fallbackImage && e.target.src !== b.fallbackImage) {
+                e.target.src = b.fallbackImage;
+              }
+            }}
+          />
+        </div>
       );
     }
 
@@ -467,7 +433,7 @@
                 Who Am I,<br /><span className="text-[#FF6FA0]">If I Was a Dog?</span>
               </h1>
               <p className="font-body text-[#1E1B18]/75 text-base sm:text-lg mb-7 max-w-md mx-auto sm:mx-0">
-                Jawab 10 situasi sehari-hari, dan biarkan kepribadianmu ketemu ras anjing kartun yang paling mirip.
+                Jawab 10 situasi sehari-hari, dan biarkan kepribadianmu ketemu ras anjing yang paling mirip.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center sm:justify-start">
                 <button
@@ -485,7 +451,12 @@
               </div>
             </div>
             <div className="flex justify-center animate-float">
-              <DogFace breed="golden" size={200} className="drop-shadow-[6px_6px_0_#1E1B18] sm:w-[240px] sm:h-[240px]" />
+              <div className="relative">
+                <DogFace breed="golden" size={210} className="shadow-[8px_8px_0_0_#1E1B18] sm:w-[240px] sm:h-[240px]" />
+                <span className="absolute -bottom-2 -right-1 bg-[#FFCF3F] border-2 border-[#1E1B18] rounded-full px-3 py-1 font-display text-xs shadow-[2px_2px_0_0_#1E1B18] rotate-6">
+                  Siap kuis? 🐕
+                </span>
+              </div>
             </div>
           </section>
 
@@ -497,7 +468,7 @@
                   onClick={() => setPage("gallery")}
                   className="flex items-center gap-2 bg-white border-[2.5px] border-[#1E1B18] rounded-2xl px-3 py-2 shadow-[3px_3px_0_0_#1E1B18] shrink-0 text-left"
                 >
-                  <DogFace breed={b.key} size={40} />
+                  <DogFace breed={b.key} size={36} />
                   <div className="pr-1">
                     <p className="font-display text-xs leading-tight">{b.name}</p>
                     <p className="text-[10px] text-[#1E1B18]/60 leading-tight">{b.tagline}</p>
@@ -586,8 +557,8 @@
           <h1 className="font-display text-2xl sm:text-3xl mb-6">Kamu adalah seekor...</h1>
           
           <div className="bg-white border-[3px] border-[#1E1B18] rounded-[28px] p-5 sm:p-6 shadow-[8px_8px_0_0_#1E1B18] text-center">
-            <div className="flex justify-center mb-3">
-              <DogFace breed={b.key} size={120} />
+            <div className="flex justify-center mb-4">
+              <DogFace breed={b.key} size={130} className="shadow-[4px_4px_0_0_#1E1B18]" />
             </div>
             <h3 className="font-display text-2xl">{b.name}</h3>
             <div className="flex flex-wrap items-center justify-center gap-1.5 mt-1 mb-4">
@@ -640,7 +611,7 @@
                 onClick={() => setModal(b.key)}
                 className="bg-white border-[2.5px] border-[#1E1B18] rounded-2xl p-3 sm:p-4 shadow-[4px_4px_0_0_#1E1B18] active:translate-y-0.5 active:shadow-[2px_2px_0_0_#1E1B18] hover:-translate-y-1 transition-all flex flex-col items-center text-center"
               >
-                <DogFace breed={b.key} size={64} className="sm:w-[72px] sm:h-[72px]" />
+                <DogFace breed={b.key} size={70} className="sm:w-[80px] sm:h-[80px]" />
                 <p className="font-display text-xs sm:text-sm mt-2">{b.name}</p>
                 <div className="flex flex-col items-center gap-1 mt-1.5 w-full">
                   <span className="text-[9px] sm:text-[10px] font-display px-2 py-0.5 rounded-full border border-[#1E1B18] bg-white">
@@ -696,10 +667,10 @@
             <div className="fixed inset-0 z-50 bg-[#1E1B18]/70 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => setModal(null)}>
               <div className="bg-[#FFF6E9] border-[3px] border-[#1E1B18] rounded-3xl p-5 sm:p-6 max-w-sm w-full shadow-[8px_8px_0_0_#1E1B18] max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
                 <div className="flex flex-col items-center text-center">
-                  <DogFace breed={modal} size={90} className="sm:w-[110px] sm:h-[110px]" />
-                  <h3 className="font-display text-lg sm:text-xl mt-2">{BREEDS[modal].name}</h3>
+                  <DogFace breed={modal} size={110} className="shadow-[4px_4px_0_0_#1E1B18]" />
+                  <h3 className="font-display text-lg sm:text-xl mt-3">{BREEDS[modal].name}</h3>
                   
-                  {/* Badge Subtitle Lengkap: Kategori & Tagline */}
+                  {/* Badge Subtitle Lengkap */}
                   <div className="flex flex-wrap items-center justify-center gap-1.5 mt-1 mb-3">
                     <span className="font-display text-[11px] px-2.5 py-0.5 rounded-full border border-[#1E1B18] bg-white">
                       {BREEDS[modal].category}
